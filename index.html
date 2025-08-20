@@ -1,1 +1,294 @@
+<!doctype html>
+<html lang="ka">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ჩემი ვებგვერდი</title>
+  <meta name="description" content="პირადი/სასწავლო ვებგვერდი, HTML5/CSS3 Grid განლაგებით.">
+  <style>
+    :root {
+      --bg: #f7f7f8;
+      --surface: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #33c27f; /* ღია-მწვანე ტონი */
+      --border: #e5e7eb;
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans", "DejaVu Sans", Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+    }
+
+    /* Layout */
+    .layout {
+      display: grid;
+      grid-template-columns: 30% 70%;
+      min-height: 100svh;
+    }
+    aside.sidebar {
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 24px 20px;
+      position: sticky;
+      top: 0;
+      align-self: start;
+      height: 100svh;
+      overflow: auto;
+    }
+    main {
+      padding: 28px;
+    }
+
+    /* Header in sidebar */
+    .profile {
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .avatar {
+      width: 132px; height: 132px;
+      border-radius: 50%;
+      border: 6px solid var(--bg);
+      outline: 2px solid var(--accent);
+      object-fit: cover;
+      background: #ddd;
+    }
+    .name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 0;
+    }
+    .role {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin: 0 0 8px 0;
+      text-align: center;
+    }
+
+    /* Nav */
+    nav {
+      border-top: 1px dashed var(--border);
+      padding-top: 14px;
+    }
+    .menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .menu a {
+      display: block;
+      padding: 10px 12px;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text);
+      border: 1px solid transparent;
+    }
+    .menu a:hover,
+    .menu a:focus {
+      border-color: var(--accent);
+      outline: none;
+      background: #ecfdf5;
+    }
+    .menu a[aria-current="page"] {
+      background: #ecfdf5;
+      border-color: var(--accent);
+      font-weight: 600;
+    }
+
+    /* Content */
+    header.site-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #ecfdf5;
+      border: 1px solid var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 18px 4px 18px;
+      margin-bottom: 18px;
+    }
+    section > header h2 {
+      margin: 0 0 8px 0;
+      font-size: 1.25rem;
+    }
+    article { margin-bottom: 14px; }
+    article h3 { margin: 0 0 6px 0; font-size: 1.1rem; }
+    p { margin: 0 0 10px 0; }
+    ul { margin: 0 0 10px 18px; }
+
+    footer.site-footer {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px; height: 1px;
+      overflow: hidden;
+    }
+    .skip-link:focus {
+      position: static;
+      width: auto; height: auto;
+      margin: 8px;
+      padding: 8px 10px;
+      background: #fff;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+    }
+
+    /* Mobile (hamburger) */
+    #menu-toggle { display: none; }
+    .hamburger {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+      margin: 8px 0 14px 0;
+      font-weight: 600;
+    }
+    .hamburger .lines {
+      width: 22px; height: 14px; position: relative;
+    }
+    .hamburger .lines::before,
+    .hamburger .lines::after,
+    .hamburger .lines span {
+      content: "";
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px; background: var(--text);
+      border-radius: 2px;
+    }
+    .hamburger .lines::before { top: 0; }
+    .hamburger .lines span { top: 6px; }
+    .hamburger .lines::after { bottom: 0; }
+
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+      aside.sidebar {
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .hamburger { display: inline-flex; }
+      nav { display: none; }
+      #menu-toggle:checked + label + nav { display: block; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: no-preference) {
+      a, .menu a { transition: background .2s, border-color .2s, color .2s; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">გადადი შიგთავსზე</a>
+
+  <div class="layout">
+    <aside class="sidebar" role="complementary">
+      <header class="profile">
+        <img class="avatar" src="assets/avatar.jpg" alt="პროფილის ფოტო">
+        <h1 class="name">ავთო ავთოფილაშვილი</h1>
+        <p class="role">კომპიუტერული მეცნიერებების მასწავლებელი</p>
+      </header>
+
+      <!-- მობილურ მენიუზე გადამრთველი -->
+      <input type="checkbox" id="menu-toggle" />
+      <label class="hamburger" for="menu-toggle" aria-controls="site-nav">
+        <span class="lines"><span></span></span> მენიუ
+      </label>
+
+      <nav id="site-nav" aria-label="ძირითადი დათვალიერება">
+        <ul class="menu">
+          <li><a href="#home" aria-current="page">თავფურცელი</a></li>
+          <li><a href="#about">ჩემზე</a></li>
+          <li><a href="#projects">პროექტები</a></li>
+          <li><a href="#contact">კონტაქტი</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main id="content" role="main">
+      <header class="site-header">
+        <span class="badge">HTML5 • CSS Grid</span>
+        <span class="badge">სწრაფი • სუფთა</span>
+      </header>
+
+      <section id="home" aria-labelledby="home-title">
+        <header><h2 id="home-title">მისასალმებელი</h2></header>
+        <article>
+          <h3>მოკლე აღწერა</h3>
+          <p>ეს არის საბაზისო, მაგრამ პროფესიული ტემპლეიტი: სემანტიკური თეგები, ხელმისაწვდომობა, Grid განლაგება, სწორი ტიპოგრაფია და ადაპტირებული მობილურზე.</p>
+        </article>
+      </section>
+
+      <section id="about" aria-labelledby="about-title">
+        <header><h2 id="about-title">ჩემზე</h2></header>
+        <article>
+          <h3>ვინ ვარ</h3>
+          <p>მასწავლებელი, რომელიც აქცენტს აკეთებს კლასიკურ, გამჭვირვალე და ეფექტურ სწავლებაზე. ვასწავლი 7–12 წლის მოსწავლეებს უსაფრთხოებისა და ასაკის შესაბამისობით.</p>
+          <ul>
+            <li>სასწავლო მასალები: HTML/CSS/JS, Python</li>
+            <li>კვლევა: კიბერუსაფრთხოება ბავშვებისთვის</li>
+          </ul>
+        </article>
+      </section>
+
+      <section id="projects" aria-labelledby="projects-title">
+        <header><h2 id="projects-title">პროექტები</h2></header>
+        <article>
+          <h3>EduCoin (სასწავლო კრიპტო)</h3>
+          <p>თამაშზე დაფუძნებული მოტივაცია და ქულების სისტემა სასწავლო პროცესში.</p>
+        </article>
+        <article>
+          <h3>Linux Summer School</h3>
+          <p>პრაქტიკული მოდული: ტერმინალი, Git, Neovim, ქსელი.</p>
+        </article>
+      </section>
+
+      <section id="contact" aria-labelledby="contact-title">
+        <header><h2 id="contact-title">კონტაქტი</h2></header>
+        <article>
+          <h3>დამიკავშირდით</h3>
+          <p>ელ-ფოსტა: <a href="mailto:you@example.com">you@example.com</a></p>
+        </article>
+      </section>
+
+      <footer class="site-footer">
+        © <span id="year"></span> ჩემი ვებგვერდი • ყველა უფლება დაცულია
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // მიმდინარე წელი ფუტერში
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
 
